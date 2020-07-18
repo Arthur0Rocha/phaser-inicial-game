@@ -1,59 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game example</title>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
+    
 </head>
 <body>
 
-    <script>
-    var config = {
-        type: Phaser.AUTO,
-        width: 800,
-        height: 600,
-        physics: {
-            default: 'arcade',
-            arcade: {
-                gravity: { y: 200 }
+    <div class="game">
+        <script>
+            var cdim = {x: 800, y: 600};
+            var ppos = {x: cdim.x/2, y: cdim.y*9/10};
+            var epos = {x: cdim.x/2, y: cdim.y/10};
+            function drawplayer(target, pos) {
+                var obj = new Phaser.Geom.Circle(pos.x, pos.y, 20);
+                var graphics = target.add.graphics({ fillStyle: { color: 0xff0000 } });
+                graphics.fillCircleShape(obj);
             }
-        },
-        scene: {
-            preload: preload,
-            create: create
-        }
-    };
+            function drawbackground(target, pos) {
+                var obj = new Phaser.Geom.Rectangle(0, 0, cdim.x, cdim.y);
+                var graphics = target.add.graphics({ fillStyle: { color: 0x00af00 } });
+                graphics.fillRectShape(obj);
+            }
+            function drawenemy(target, pos) {
+                var obj = new Phaser.Geom.Rectangle(pos.x - 50, pos.y - 25, 100, 50);
+                var graphics = target.add.graphics({ fillStyle: { color: 0x0000ff } });
+                graphics.fillRectShape(obj);
+            }
 
-    var game = new Phaser.Game(config);
+            var config = {
+                type: Phaser.AUTO,
+                width: cdim.x,
+                height: cdim.y,
+                scene: {
+                    create: create
+                }
+            };
 
-    function preload ()
-    {
-        this.load.setBaseURL('http://labs.phaser.io');
+            var game = new Phaser.Game(config);
 
-        this.load.image('sky', 'assets/skies/space3.png');
-        this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-        this.load.image('red', 'assets/particles/red.png');
-    }
-
-    function create ()
-    {
-        this.add.image(400, 300, 'sky');
-
-        var particles = this.add.particles('red');
-
-        var emitter = particles.createEmitter({
-            speed: 300,
-            scale: { start: 1, end: 0 },
-            blendMode: 'ADD'
-        });
-
-        var logo = this.physics.add.image(400, 100, 'logo');
-
-        logo.setVelocity(50, 20);
-        logo.setBounce(1, 1);
-        logo.setCollideWorldBounds(true);
-
-        emitter.startFollow(logo);
-    }
-    </script>
+            function create () {
+                drawbackground(this);
+                drawenemy(this, epos);
+                drawplayer(this, ppos);
+            }
+        </script>
+    </div>
 
 </body>
 </html>
